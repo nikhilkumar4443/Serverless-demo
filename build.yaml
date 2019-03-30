@@ -1,0 +1,35 @@
+steps:
+- task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Installing AWS CLI and required tools'
+  inputs:
+    awsCredentials: 'AWS-Connection-1'
+    regionName: 'us-east-1'
+    scriptType: inline
+    inlineScript: |
+     echo "Updating server pacakges"
+     sudo apt-get update
+     echo  "installing aws cli"
+     sudo apt-get install awscli
+     sudo apt install python3.6
+     sudo python3.6 -m pip install
+     sudo pip install --upgrade pip
+     echo "installing node pacakges"
+     curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+     sudo apt-get install -y nodejs
+     echo "Installing Serverless"
+     sudo npm install -g serverless
+     sudo npm install serverless-python-requirements
+     sudo -H pip install -r requirements.txt
+     sudo serverless package --stage dev --package stage-artifacts
+     echo "Configuring Credentials for serverless"
+     sudo serverless config credentials --provider aws --key  $AWS_ACCESS_KEY_ID --secret  $AWS_SECRET_ACCESS_KEY
+     echo  "getting serverless info"
+     sudo serverless info
+     echo  "deploying serverless"
+     sudo  serverless deploy -v
+     
+     
+     
+     
+     
+     
