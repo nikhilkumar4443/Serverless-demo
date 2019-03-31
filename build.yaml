@@ -1,15 +1,17 @@
 pool:
-  name: Default
+  name: Hosted Ubuntu 1604
   demands: sh
 
 steps:
 - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
-  displayName: 'Installing AWS CLI and required tools'
+  displayName: 'AWS Shell Script'
   inputs:
     awsCredentials: 'AWS-Connection-1'
     regionName: 'us-east-1'
     scriptType: inline
     inlineScript: |
+     echo  "Installling AWS cli"
+     sudo apt-get install awscli
      echo "Install python3.6"
      sudo add-apt-repository ppa:jonathonf/python-3.6
      sudo apt-get update
@@ -25,14 +27,14 @@ steps:
      ls
      echo "Installing required serverless plugins"
      sudo npm install 
-     #pip install -r requirements.txt
-     #sudo serverless package --stage dev --package stage-artifacts
+     sudo -H  pip install -r requirements.txt
+     sudo serverless package --stage dev --package stage-artifacts
      echo "Configuring Credentials for serverless"
      sudo serverless config credentials --provider aws --key  $AWS_ACCESS_KEY_ID --secret  $AWS_SECRET_ACCESS_KEY
      
 
 - task: AmazonWebServices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
-  displayName: 'Deploying 1 solution'
+  displayName: 'AWS Shell Script'
   inputs:
     awsCredentials: 'AWS-Connection-1'
     regionName: 'us-east-1'
